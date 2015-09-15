@@ -7,5 +7,9 @@ authors = ["dremonkey <a.deutmeyer@gmail.com>"]
 geojson = "0.1.0"
 rustc-serialize = "0.3.0"
 
+[dependencies.lodestone-core]
+path = "../lodestone-core"
+
 [dependencies.lodestone-point]
 path = "../lodestone-point"
+
