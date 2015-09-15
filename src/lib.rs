@@ -1,4 +1,4 @@
-/// The main create for lodestone-distance
+/// The main crate for lodestone-distance
 /// 
 /// ## Overview
 /// 
@@ -46,7 +46,7 @@ pub extern fn distance(
 }
 
 fn to_rad(degree: f64) -> f64 {
-  return degree * PI / 180.0;
+  degree * PI / 180.0
 }
 
 #[cfg(test)]
