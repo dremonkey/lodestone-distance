@@ -6,8 +6,8 @@
 /// the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula).
 
 // Third party packages
-extern crate lodestone_point;
 extern crate lodestone_core;
+extern crate lodestone_point;
 
 use lodestone_point::FeaturePoint;
 use lodestone_core::{utils, wgs84};
@@ -31,13 +31,14 @@ pub extern fn distance(
 
   match units {
     "degrees" => c.to_degrees(),
-    "kilometers" => c * wgs84::RADIUS / 1000.0,
-    "miles" => {
+    "kilometers" | "km" => c * wgs84::RADIUS / 1000.0,
+    "meters" | "m" => c * wgs84::RADIUS,
+    "miles" | "mi" => {
       let radius_mi = utils::km_to_mi(wgs84::RADIUS / 1000.0);
       c * radius_mi
     },
     "radians" => c,
-    _ => c * wgs84::RADIUS / 1000.0,
+    _ => panic!("Unknown unit of measurement: {}", units)
   }
 }
 
@@ -45,6 +46,27 @@ pub extern fn distance(
 mod tests {
   use lodestone_point::FeaturePoint;
   use super::distance;
+
+  #[test]
+  #[should_panic(expected = "Unknown unit of measurement")]
+  fn test_wrong_units() {
+    let sf = vec![-122.4167,37.7833];
+    let ny = vec![-74.0059,40.7127];
+
+    let sf_point = FeaturePoint::new(sf);
+    let ny_point = FeaturePoint::new(ny);
+
+    distance(&sf_point, &ny_point, "leagues");
+  }
+
+  #[test]
+  fn test_simple() {
+    let pt1 = FeaturePoint::new(vec![0.0, 0.0]);
+    let pt2 = FeaturePoint::new(vec![1.0, 0.0]);
+    let d_km = distance(&pt1, &pt2, "km");
+
+    assert_eq!(d_km, 111.31949079327356);
+  }
   
   #[test]
   fn test_sf_to_ny() {
